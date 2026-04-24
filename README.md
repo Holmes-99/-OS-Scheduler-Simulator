@@ -172,6 +172,7 @@ OS-Scheduler-Pink/
 ├── scenario1.txt       # Deadlock case
 ├── scenario2.txt       # Aging case
 ├── scenario3.txt       # Complex deadlock chain
+├── scenario4.txt       # Crciular wait
 └── README.md
 ```
 
