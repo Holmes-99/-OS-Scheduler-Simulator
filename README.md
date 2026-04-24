@@ -156,11 +156,5 @@ OS_Task2/
 
 ---
 
-## Authors
-
-| Name | ID |
-|------|----|
-| Shatha | — |
-|        | — |
 
 *Birzeit University — Department of Electrical & Computer Engineering*
