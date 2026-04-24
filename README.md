@@ -27,15 +27,15 @@ Built as an **interactive CLI system**, allowing users to step through execution
 
 ---
 
-## 🎀 Interactive CLI Experience
+##  Interactive CLI Experience
 
 ```
 [Time = 42]
 
-💖 Running:   P2
-🎀 Ready:     P0, P3
-🌸 Waiting:   P1 (R2)
-🌷 IO Queue:  P4 (3 ticks)
+ Running:   P2
+ Ready:     P0, P3
+ Waiting:   P1 (R2)
+ IO Queue:  P4 (3 ticks)
 
 Command → [Enter = step | a = auto-run]
 ```
