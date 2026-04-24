@@ -132,6 +132,7 @@ P0 and P1 form a circular wait → deadlock detected at **t=74**, P1 killed.
 0  0  1  CPU {R[1,2], 50, F[1,1], 20, F[1,1]}
 1  5  1  CPU {20} IO {30} CPU {20, R[2,3], 30, F[2,3], 10}
 ```
+<img width="866" height="348" alt="image" src="https://github.com/user-attachments/assets/fa93327e-e91f-417e-b912-53fff960cb41" />
 
 All processes terminate normally. Low-priority processes age up over time.
 
