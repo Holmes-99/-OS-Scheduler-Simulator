@@ -1,0 +1,12 @@
+The Circular Chain (Complex Deadlock)
+Purpose: Instead of a simple 2-process deadlock, this creates a 3-way chain (P0 waits for P1, P1 waits for P2, P2 waits for P0). It proves your Banker's-style detection is robust.
+
+[1,1], [2,1], [3,1]
+0 0 5 CPU {R[1,1], 15, R[2,1], 10, F[1,1], F[2,1]}
+1 0 5 CPU {R[2,1], 15, R[3,1], 10, F[2,1], F[3,1]}
+2 0 5 CPU {R[3,1], 15, R[1,1], 10, F[3,1], F[1,1]}
+3 2 1 CPU {20} IO {10} CPU {20}
+4 5 8 CPU {R[1,1], 5, 40, F[1,1]}
+
+What happens: P0, P1, and P2 all arrive at time 0. Because they have the same priority (5), they will alternate (Round Robin). P0 grabs R1, P1 grabs R2, P2 grabs R3. Then they all block trying to get the next resource in the circle.
+Verification: Your log should show a deadlock involving PIDs [0, 1, 2].
