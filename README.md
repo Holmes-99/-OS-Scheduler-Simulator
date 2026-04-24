@@ -121,6 +121,7 @@ Recovery: the deadlocked process with the **lowest scheduling priority** (highes
 3  5  3  CPU {R[3,3], 30, F[3,3]} IO {15} CPU {10}
 4  10 1  CPU {10, R[1,1], 20, F[1,1]}
 ```
+<img width="1259" height="550" alt="image" src="https://github.com/user-attachments/assets/b3c061f2-bee1-4793-ab5b-8a2b251d6453" />
 
 P0 and P1 form a circular wait → deadlock detected at **t=74**, P1 killed.
 
