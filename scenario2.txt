@@ -1,13 +1,13 @@
 (No-Deadlock / Starvation & Aging)
 Purpose: This scenario has no deadlock. It uses a very low-priority process (P0) and several high-priority processes (P1-P4) that hog the CPU. P0 will stay in the Ready Queue until the Aging mechanism boosts its priority high enough to finally run.
-code
-Text
+
 [1,10], [2,10], [3,10]
 0 0 20 CPU {30, R[1,2], 20, F[1,2], 10}
 1 0 1 CPU {50} IO {10} CPU {40}
 2 1 1 CPU {50} IO {10} CPU {40}
 3 2 1 CPU {50} IO {10} CPU {40}
 4 3 1 CPU {50} IO {10} CPU {40}
+
 What to expect:
 No deadlock message.
 In the FINAL STATS, P0 will have a high Aging count (e.g., 5 or 10).
