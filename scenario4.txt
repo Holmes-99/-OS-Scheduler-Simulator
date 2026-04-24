@@ -1,0 +1,17 @@
+The I/O Burst & Preemption Shuffle (No Deadlock)
+Purpose: This scenario focuses on I/O yielding and Priority Preemption. It shows how high-priority processes (P1, P2) can finish quickly by using I/O, while a low-priority process (P4) is forced to age.
+File Content (scenario4.txt):
+
+[1,5], [2,2]
+0 0 10 CPU {R[1,2], 40, F[1,2]}
+1 0 2 CPU {5} IO {15} CPU {5} IO {15} CPU {5}
+2 2 2 CPU {5} IO {15} CPU {5} IO {15} CPU {5}
+3 10 1 CPU {20}
+4 0 20 CPU {R[2,2], 50, F[2,2]}
+5 5 2 CPU {10} IO {20} CPU {10}
+
+What happens:
+Preemption: P3 arrives at time 10 with Priority 1. It should immediately kick whoever is on the CPU off (even if they are mid-burst).
+I/O Shuffling: P1 and P2 have very high priority but keep going to I/O. Every time they go to I/O, the CPU becomes free for the lower-priority P0.
+Aging: P4 has the worst priority (20). It will sit in the queue for a long time. Watch its Aging count grow in the final stats.
+Verification: A very "choppy" Gantt chart showing many context switches and high Aging for P4.
