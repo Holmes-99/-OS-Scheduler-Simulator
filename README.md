@@ -1,162 +1,39 @@
-# OS Process Scheduler Simulator
-> ENCS3390 — Operating Systems Concepts | Birzeit University | Fall 2025/2026
+<div align="center">
 
-A single-CPU process scheduling simulator with **preemptive priority scheduling**, **round-robin time slicing**, **aging**, **deadlock detection**, and **deadlock recovery**.
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff007f,100:ff85a2&height=200&section=header&text=OS%20Scheduler%20Simulator&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Priority%20Scheduling%20%7C%20Deadlock%20Recovery%20%7C%20Aging%20%7C%20Birzeit%20University&descAlignY=60&descSize=18&descColor=ffffff"/>
 
----
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=20&duration=3000&pause=1000&color=FF1493&center=true&vCenter=true&width=800&lines=Preemptive+Priority+Scheduling;Round+Robin+Fair+Sharing;Banker's+Algorithm+Deadlock+Engine;Starvation+Prevention+via+Aging;Pink-Themed+Interactive+Simulation)](https://git.io/typing-svg)
 
-## Features
+![Python](https://img.shields.io/badge/Python-3.x-FF69B4?style=for-the-badge&logo=python&logoColor=white)
+![Scheduling](https://img.shields.io/badge/Mode-Preemptive-e91e63?style=for-the-badge)
+![Deadlock](https://img.shields.io/badge/Deadlock-Detection%20%26%20Recovery-9c27b0?style=for-the-badge)
+![University](https://img.shields.io/badge/Birzeit%20University-ENCS3390-1a1a2e?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Verified-success?style=for-the-badge)
 
-- **Preemptive Priority Scheduling** — higher-priority processes immediately preempt lower-priority ones
-- **Round Robin** — quantum of 5 time units per process at equal priority
-- **Aging** — processes waiting in the ready queue for 10+ units get their priority decremented by 1 (prevents starvation)
-- **Resource Management** — processes can request (`R[id, amt]`) and release (`F[id, amt]`) resource instances mid-burst
-- **Deadlock Detection** — Banker's-style resource-allocation graph reduction runs every tick
-- **Deadlock Recovery** — the lowest-priority deadlocked process is killed and its resources are freed
-- **Gantt Chart** — compressed timeline of process execution printed at the end
-- **Statistics** — per-process waiting time, resource waiting time, turnaround time, and aging count
+</div>
 
 ---
 
-## Input Format
+## 📋 Abstract
 
-```
-[ResourceID, Instances], [ResourceID, Instances], ...
-PID  ArrivalTime  Priority  CPU {burst} IO {burst} CPU {burst} ...
-```
+This repository contains a high-fidelity **Process Scheduler & Deadlock Management Simulator** developed in Python. It models a single-core CPU environment where processes compete for computational time and multi-instance resource types. The simulator features a custom **Pink-Themed Interactive CLI** that allows users to step through time ticks and observe real-time transitions in process states, queue management, and resource allocation.
 
-- Priority range: **0 (highest) → 20 (lowest)**
-- Each process must **start and end with a CPU burst**
-- Inside a CPU burst: plain integers = CPU duration, `R[id,amt]` = acquire, `F[id,amt]` = release
-- IO bursts are a single integer duration
-
-### Example input file
-
-```
-[1,5], [2,3], [5,1]
-0  0  1  CPU {R[1,2], 50, F[1,1], 20, F[1,1]}
-1  5  1  CPU {20} IO {30} CPU {20, R[2,3], 30, F[2,3], 10}
-```
+> **Final CPI/Performance Metric:** Optimized for low average waiting time while ensuring zero deadlock-induced system crashes through automated victim selection and resource preemption.
 
 ---
 
-## How to Run
+## ⚙️ Interactive Dashboard Features
 
-```bash
-python3 simulator.py
-```
+The simulator isn't just a static log; it's a **live experience**. 
 
-The simulator reads from `input.txt` in the same directory.
+- **Step-by-Step Mode:** Press `Enter` to advance time by 1 tick and see exactly how the CPU choices are made.
+- **Auto-Run Mode:** Type `a` to let the simulation finish at high speed.
+- **Pink Aesthetics:** ANSI-color-coded terminal output for high readability and a unique visual style.
 
----
-
-## Output
-
-```
-Simulation started...
-
->>> Time 74: DEADLOCK detected among PIDs [0, 1]. Killing P1
-
-==================== GANTT CHART ====================
-[0-10: P2] -> [10-15: P0] -> [15-19: P2] -> ...
-
-==================== DEADLOCK LOG ====================
-  Time 74: Deadlock among PIDs [0, 1] → killed P1
-
-==================== FINAL STATS ====================
-PID   | State        | Wait   | ResWait  | Turnaround  | Aging
------------------------------------------------------------------
-0     | TERMINATED   | 31     | 30       | 100         | 2
-1     | DEADLOCKED   | —      | —        | —           | 2
-2     | TERMINATED   | 47     | 0        | 110         | 3
-...
-Average Waiting Time   : 79.50
-Average Turnaround Time: 133.25
-```
-
----
-
-## Scheduling Algorithm
-
-```
-Every tick:
-  1. Admit newly arrived processes → READY queue
-  2. Age processes waiting 10+ ticks in READY → priority--
-  3. Advance IO timers; finished IO → READY queue
-  4. Unblock WAITING processes whose resource is now available
-  5. Sort READY queue by (priority ASC, arrival_time ASC)
-  6. Preempt running process if:
-       - a higher-priority process is ready, OR
-       - quantum (5 ticks) is exhausted
-  7. Dispatch next from READY queue
-  8. Execute one tick (process R/F/CPU instructions)
-  9. Run deadlock detection; kill victim if deadlock found
- 10. Accumulate waiting-time stats
-```
-
----
-
-## Deadlock Detection & Recovery
-
-Detection uses a **resource-allocation graph reduction** (Banker's algorithm style):
-
-1. Build `work = available resources`
-2. Add resources held by non-blocked processes to `work`
-3. Repeatedly: if a WAITING process's request can be satisfied from `work`, mark it done and add its held resources back to `work`
-4. Any process still unmarked is in a **deadlock cycle**
-
-Recovery: the deadlocked process with the **lowest scheduling priority** (highest priority number) is terminated and its resources are released immediately.
-
----
-
-## Test Scenarios
-
-### Scenario 1 — With deadlock
-
-```
-[1,2], [2,2], [3,5]
-0  0  2  CPU {R[1,2], 20} CPU {R[2,2], 20, F[1,2], F[2,2]}
-1  2  2  CPU {R[2,2], 20} CPU {R[1,2], 20, F[2,2], F[1,2]}
-2  0  1  CPU {15} IO {10} CPU {15} IO {10} CPU {15}
-3  5  3  CPU {R[3,3], 30, F[3,3]} IO {15} CPU {10}
-4  10 1  CPU {10, R[1,1], 20, F[1,1]}
-```
-<img width="1259" height="550" alt="image" src="https://github.com/user-attachments/assets/b3c061f2-bee1-4793-ab5b-8a2b251d6453" />
-
-P0 and P1 form a circular wait → deadlock detected at **t=74**, P1 killed.
-
-### Scenario 2 — No deadlock (aging demo)
-
-```
-[1,5], [2,3], [5,1]
-0  0  1  CPU {R[1,2], 50, F[1,1], 20, F[1,1]}
-1  5  1  CPU {20} IO {30} CPU {20, R[2,3], 30, F[2,3], 10}
-```
-<img width="866" height="348" alt="image" src="https://github.com/user-attachments/assets/fa93327e-e91f-417e-b912-53fff960cb41" />
-
-All processes terminate normally. Low-priority processes age up over time.
-
----
-
-## Project Structure
-
-```
-OS_Task2/
-├── simulator.py     # main simulator
-├── input.txt        # active test case (swap for different scenarios)
-├── scenario1.txt    # deadlock test case
-├── scenario2.txt    # no-deadlock / aging test case
-└── README.md
-```
-
----
-
-## Requirements
-
-- Python 3.6+
-- No external libraries (standard library only)
-
----
-
-
-*Birzeit University — Department of Electrical & Computer Engineering*
+```text
+Time: 76
+Resources Available: {1: 0, 2: 0}
+CPU Running: P0
+Ready Queue: [2, 4]
+Waiting (Res): [1]
+>>> 🚨 DEADLOCK! Killing P1 to save the system! 🚨
