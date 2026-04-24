@@ -1,0 +1,12 @@
+(Deadlock & Recovery)
+Purpose: This scenario creates a circular wait. P0 holds R1 and wants R2. P1 holds R2 and wants R1. At least 5 processes are included to meet the "complex scenario" requirement.
+code
+
+0 0 2 CPU {R[1,2], 20, R[2,2], 10, F[1,2], F[2,2]}
+1 2 2 CPU {R[2,2], 20, R[1,2], 10, F[2,2], F[1,2]}
+2 0 1 CPU {15} IO {10} CPU {15} IO {10} CPU {15}
+3 5 3 CPU {R[3,3], 30, F[3,3]} IO {15} CPU {10}
+4 10 1 CPU {10, R[1,1], 20, F[1,1]}
+
+What to expect: You will see a "DEADLOCK detected" message in your console. P1 will likely be killed because it has a lower priority (or higher PID) than the others involved.
+
